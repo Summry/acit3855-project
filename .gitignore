@@ -1,0 +1,17 @@
+# PYTHON VIRTUAL ENVIRONMENT
+venv/
+
+# PYCACHE
+Processor/__pycache__/
+Receiver/__pycache__/
+Storage/__pycache__/
+
+# JMETER
+jmeter.*
+apache-jmeter-5.6.3/
+
+# VSCODE
+.vscode/
+
+# ZIP FILES
+*.zip

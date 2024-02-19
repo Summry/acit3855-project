@@ -1,0 +1,11 @@
+version: 1
+datastore:
+  filename: stats.sqlite
+scheduler:
+  period_sec: 5
+deliverystore:
+  url: http://localhost:8090/deliveries
+schedulestore:
+  url: http://localhost:8090/schedules
+app:
+  port: 8100

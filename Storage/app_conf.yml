@@ -1,0 +1,9 @@
+version: 1
+datastore:
+  user: naz
+  password: password
+  hostname: localhost
+  port: 3306
+  db: delishery
+app:
+  port: 8090

@@ -1,0 +1,7 @@
+version: 1
+deliverystore:
+  url: http://localhost:8090/delishery/deliveries
+schedulestore:
+  url: http://localhost:8090/delishery/schedules
+app:
+  port: 8080

@@ -1,0 +1,178 @@
+openapi: 3.0.0
+info:
+  description: This API receives delivery requests and schedules from registered users using the mobile application.
+  version: "1.0.0"
+  title: Delishery API
+  contact:
+    email: nfakhrurradi@my.bcit.ca
+
+paths:
+  /delishery/schedules:
+    post:
+      tags:
+        - request schedules
+      summary: displays an updated list of new delivery schedules
+      operationId: app.add_delishery_schedule
+      description: Adds a new delivery schedule to the system
+      responses:
+        "201":
+          description: delivery schedule created
+        "400":
+          description: "invalid input, object invalid"
+        "409":
+          description: an existing delivery schedule already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DelisherySchedule"
+        description: User-requested schedule to add
+  /delishery/deliveries:
+    post:
+      tags:
+        - request deliveries
+      summary: displays an updated list of new deliveries
+      operationId: app.add_delishery_delivery
+      description: Adds a new delivery to the system
+      responses:
+        "201":
+          description: delivery request added
+        "400":
+          description: "invalid input, object invalid"
+        "409":
+          description: an existing delivery request already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DelisheryDelivery"
+        description: User-requested delivery to add
+  /deliveries:
+    get:
+      tags:
+        - request deliveries
+      summary: gets deliveries based on given timestamp
+      operationId: app.get_deliveries
+      description: Gets a list of deliveries from the given timestamp and onwards
+      parameters:
+        - name: start_timestamp
+          in: query
+          description: Limits the number of deliveries returned
+          schema:
+            type: string
+            format: date-time
+            example: "2016-08-29T09:12:33.001Z"
+        - name: end_timestamp
+          in: query
+          description: Limits the number of deliveries returned
+          schema:
+            type: string
+            format: date-time
+            example: "2016-08-29T09:12:33.001Z"
+      responses:
+        "200":
+          description: Successfully returned a list of deliveries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DelisheryDelivery"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /schedules:
+    get:
+      tags:
+        - request schedules
+      summary: gets schedules based on given timestamp
+      operationId: app.get_schedules
+      description: Gets a list of schedules from the given timestamp and onwards
+      parameters:
+        - name: start_timestamp
+          in: query
+          description: Limits the number of schedules returned
+          schema:
+            type: string
+            format: date-time
+            example: "2016-08-29T09:12:33.001Z"
+        - name: end_timestamp
+          in: query
+          description: Limits the number of schedules returned
+          schema:
+            type: string
+            format: date-time
+            example: "2016-08-29T09:12:33.001Z"
+      responses:
+        "200":
+          description: Successfully returned a list of schedules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DelisherySchedule"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    DelisherySchedule:
+      type: object
+      required:
+        - schedule_id
+        - user_id
+        - number_of_deliveries
+        - created_date
+      properties:
+        schedule_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        number_of_deliveries:
+          type: integer
+          example: 2
+        created_date:
+          type: string
+          format: date-time
+          example: "2016-08-29T09:12:33.001Z"
+    DelisheryDelivery:
+      type: object
+      required:
+        - delivery_id
+        - user_id
+        - item_quantity
+        - requested_date
+      properties:
+        delivery_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        user_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        item_quantity:
+          type: integer
+          example: 5
+        requested_date:
+          type: string
+          format: date-time
+          example: "2017-05-05T10:12:30.001Z"
