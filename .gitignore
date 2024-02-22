@@ -15,3 +15,6 @@ apache-jmeter-5.6.3/
 
 # ZIP FILES
 *.zip
+
+# SSH KEYS
+**.pem
