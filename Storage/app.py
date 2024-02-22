@@ -142,8 +142,7 @@ def get_deliveries(start_timestamp, end_timestamp):
 
   for result in results:
     results_list.append(result.to_dict())
-  print("RESULTS LIST.......................................................\n", results_list)
-
+    
   session.close()
 
   log_get_info('deliveries', start_timestamp, len(results_list))
