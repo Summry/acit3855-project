@@ -3,5 +3,9 @@ deliverystore:
   url: http://localhost:8090/delishery/deliveries
 schedulestore:
   url: http://localhost:8090/delishery/schedules
+events:
+  hostname: acit3855lab6a.westus.cloudapp.azure.com
+  port: 9092
+  topic: events
 app:
   port: 8080
