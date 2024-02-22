@@ -37,6 +37,12 @@ def configure_logging():
     log_config = yaml.safe_load(f.read())
     logging.config.dictConfig(log_config)
 
+def log_db_info():
+  """Logs database connection details
+  """
+  logger = logging.getLogger('basicLogger')
+  logger.info(f"Connecting to DB. Hostname:{DB_HOST}, Port:{DB_PORT}")
+
 def log_post_info(event, trace_id):
   """Logs requests
 
@@ -65,6 +71,8 @@ def add_delishery_delivery(body):
 
   session = DB_SESSION()
 
+  log_db_info()
+
   dlv = Delivery(
     delivery_id = body['delivery_id'],
     user_id = body['user_id'],
@@ -87,6 +95,8 @@ def add_delishery_schedule(body):
   """
 
   session = DB_SESSION()
+
+  log_db_info()
 
   sch = Schedule(
     schedule_id = body['schedule_id'],

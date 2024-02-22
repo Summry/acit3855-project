@@ -1,9 +1,9 @@
 version: 1
 datastore:
-  user: naz
+  user: user
   password: password
-  hostname: localhost
+  hostname: acit3855lab6a.westus.cloudapp.azure.com
   port: 3306
-  db: delishery
+  db: events
 app:
   port: 8090
