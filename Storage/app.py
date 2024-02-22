@@ -30,18 +30,20 @@ DB_ENGINE = create_engine(f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{D
 Base.metadata.bind = DB_ENGINE
 DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
+def log_db_info():
+  """Logs database connection details
+  """
+  logger = logging.getLogger('basicLogger')
+  logger.info(f"Connecting to DB. Hostname:{DB_HOST}, Port:{DB_PORT}")
+
+log_db_info()
+
 def configure_logging():
   """Logging configuration - creates app.log file
   """
   with open('log_conf.yml', 'r') as f:
     log_config = yaml.safe_load(f.read())
     logging.config.dictConfig(log_config)
-
-def log_db_info():
-  """Logs database connection details
-  """
-  logger = logging.getLogger('basicLogger')
-  logger.info(f"Connecting to DB. Hostname:{DB_HOST}, Port:{DB_PORT}")
 
 def log_post_info(event, trace_id):
   """Logs requests
