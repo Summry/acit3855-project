@@ -7,46 +7,6 @@ info:
     email: nfakhrurradi@my.bcit.ca
 
 paths:
-  /delishery/schedules:
-    post:
-      tags:
-        - request schedules
-      summary: displays an updated list of new delivery schedules
-      operationId: app.add_delishery_schedule
-      description: Adds a new delivery schedule to the system
-      responses:
-        "201":
-          description: delivery schedule created
-        "400":
-          description: "invalid input, object invalid"
-        "409":
-          description: an existing delivery schedule already exists
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DelisherySchedule"
-        description: User-requested schedule to add
-  /delishery/deliveries:
-    post:
-      tags:
-        - request deliveries
-      summary: displays an updated list of new deliveries
-      operationId: app.add_delishery_delivery
-      description: Adds a new delivery to the system
-      responses:
-        "201":
-          description: delivery request added
-        "400":
-          description: "invalid input, object invalid"
-        "409":
-          description: an existing delivery request already exists
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DelisheryDelivery"
-        description: User-requested delivery to add
   /deliveries:
     get:
       tags:

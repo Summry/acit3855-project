@@ -1,7 +1,10 @@
-import connexion, yaml, logging, logging.config, datetime
+import connexion, yaml, logging, logging.config, datetime, json
 from connexion import NoContent
 
 from sqlalchemy import and_, create_engine
+from pykafka import KafkaClient
+from pykafka.common import OffsetType
+from threading import Thread
 from sqlalchemy.orm import sessionmaker
 from base import Base
 from models import Delivery, Schedule
@@ -66,55 +69,40 @@ def log_get_info(event, start_timestamp, len_of_results):
   logger = logging.getLogger('basicLogger')
   logger.info(f"Query for {event} after {start_timestamp} returns {len_of_results} results")
 
-def add_delishery_delivery(body):
-  """
-  This endpoint will add a new delivery.
-  """
+def write_to_database(event_type, body):
+  """This function will write the body/data/payload to the database
 
-  session = DB_SESSION()
-
-  log_db_info()
-
-  dlv = Delivery(
-    delivery_id = body['delivery_id'],
-    user_id = body['user_id'],
-    item_quantity = body['item_quantity'],
-    trace_id = body['trace_id']
-  )
-
-  session.add(dlv)
-
-  session.commit()
-  session.close()
-
-  log_post_info('delivery', body['trace_id'])
-
-  return NoContent, 201
-
-def add_delishery_schedule(body):
-  """
-  This endpoint will add a new schedule.
+  Args:
+      event_type (string): Name of the event that is being written
+      body (object): JSON object
   """
 
   session = DB_SESSION()
 
-  log_db_info()
+  evt = {}
 
-  sch = Schedule(
-    schedule_id = body['schedule_id'],
-    user_id = body['user_id'],
-    number_of_deliveries = body['number_of_deliveries'],
-    trace_id = body['trace_id']
-  )
+  if event_type == "delivery":
+    evt = Delivery(
+      delivery_id = body['delivery_id'],
+      user_id = body['user_id'],
+      item_quantity = body['item_quantity'],
+      trace_id = body['trace_id']
+    )
 
-  session.add(sch)
+  elif event_type == "schedule":
+    evt = Schedule(
+      schedule_id = body['schedule_id'],
+      user_id = body['user_id'],
+      number_of_deliveries = body['number_of_deliveries'],
+      trace_id = body['trace_id']
+    )
+
+  session.add(evt)
 
   session.commit()
   session.close()
 
-  log_post_info('schedule', body['trace_id'])
-
-  return NoContent, 201
+  log_post_info(event_type, body['trace_id'])
 
 def get_deliveries(start_timestamp, end_timestamp):
   """GET request that gets list of deliveries
@@ -179,10 +167,36 @@ def get_schedules(start_timestamp, end_timestamp):
 
   return results_list, 200
 
+def process_messages():
+  """ Process event messages """
+  hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
+  client = KafkaClient(hosts=hostname)
+  topic = client.topics[str.encode(app_config['events']['topic'])]
+
+  consumer = topic.get_simple_consumer(consumer_group=b'event_group', 
+                                       reset_offset_on_start=False, 
+                                       auto_offset_reset=OffsetType.LATEST)
+  
+  for msg in consumer:
+    msg_str = msg.value.decode('utf-8')
+    msg = json.loads(msg_str)
+    logger = logging.getLogger('basicLogger')
+    logger.info("Message: %s" % msg)
+
+    payload = msg['payload'] # request body (event JSON object)
+
+    write_to_database(msg['type'], payload)
+
+    consumer.commit_offsets()
+
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("delishery.yaml", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
   configure_logging()
+
+  t1 = Thread(target=process_messages)
+  t1.setDaemon(True)
+  t1.start()
 
   app.run(port=app_config['app']['port'])

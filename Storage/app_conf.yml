@@ -5,5 +5,9 @@ datastore:
   hostname: acit3855lab6a.westus.cloudapp.azure.com
   port: 3306
   db: events
+events:
+  hostname: acit3855lab6a.westus.cloudapp.azure.com
+  port: 9092
+  topic: events
 app:
   port: 8090
