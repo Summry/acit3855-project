@@ -13,6 +13,7 @@ This project consists of multiple microservices that work together as one whole 
 1. [x] Receiver Service
 2. [x] Storage Service
 3. [x] Scheduler/Processor Service
+4. [x] Audit Service
 
 ## Receiver Service
 
