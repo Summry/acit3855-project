@@ -2,9 +2,7 @@
 venv/
 
 # PYCACHE
-Processor/__pycache__/
-Receiver/__pycache__/
-Storage/__pycache__/
+**__pycache__/
 
 # JMETER
 jmeter.*

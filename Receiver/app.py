@@ -1,4 +1,4 @@
-import connexion, requests, yaml, logging, uuid, logging.config, datetime, json
+import connexion, yaml, logging, uuid, logging.config, datetime, json
 from pykafka import KafkaClient
 from connexion import NoContent
 
@@ -64,9 +64,6 @@ def add_delishery_schedule(body):
   trace_id = str(uuid.uuid4())
   log_info('SCHEDULE', trace_id)
   body['trace_id'] = trace_id
-
-  with open('app_conf.yml', 'r') as f:
-    app_config = yaml.safe_load(f.read())
   
   # response = requests.post(app_config['schedulestore']['url'], json=body)
   invoke_kafka_producer('schedule', body)

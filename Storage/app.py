@@ -69,17 +69,18 @@ def log_get_info(event, start_timestamp, len_of_results):
   logger = logging.getLogger('basicLogger')
   logger.info(f"Query for {event} after {start_timestamp} returns {len_of_results} results")
 
-def write_to_database(event_type, body):
+def write_to_database(message):
   """This function will write the body/data/payload to the database
 
   Args:
-      event_type (string): Name of the event that is being written
-      body (object): JSON object
+      Kafka Message (dict): message obtained from kafka
   """
 
   session = DB_SESSION()
 
   evt = {}
+  event_type = message['type']
+  body = message['payload']
 
   if event_type == "delivery":
     evt = Delivery(
@@ -183,9 +184,7 @@ def process_messages():
     logger = logging.getLogger('basicLogger')
     logger.info("Message: %s" % msg)
 
-    payload = msg['payload'] # request body (event JSON object)
-
-    write_to_database(msg['type'], payload)
+    write_to_database(msg)
 
     consumer.commit_offsets()
 
