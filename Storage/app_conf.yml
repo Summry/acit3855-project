@@ -1,7 +1,7 @@
 version: 1
 datastore:
   user: user
-  password: # FILL THIS IN LATER IN LAB 7
+  password: password
   hostname: acit3855lab6a.westus.cloudapp.azure.com
   port: 3306
   db: events
