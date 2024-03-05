@@ -31,9 +31,9 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: "events"
-      MYSQL_USER: "user"
-      MYSQL_PASSWORD: "password"
-      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       # <Port exposed> : < MySQL Port running inside container>
       - "3306:3306"
@@ -45,6 +45,53 @@ services:
     volumes:
       - my-db:/var/lib/mysql
 
+  receiver:
+    build:
+      context: ./Receiver
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+
+  storage:
+    build:
+      context: ./Storage
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    expose:
+      - "8090"
+    depends_on:
+      - "db"
+
+  processor:
+    build:
+      context: ./Processor
+      dockerfile: Dockerfile
+    ports:
+      - "8100:8100"
+    expose:
+      - "8100"
+    depends_on:
+      - "storage"
+    networks:
+      - host
+
+  audit:
+    build:
+      context: ./Audit
+      dockerfile: Dockerfile
+    ports:
+      - "8110:8110"
+    expose:
+      - "8110"
+    depends_on:
+      - "processor"
+
 # Names our volume
 volumes:
   my-db:
+
+networks:
+  host:
