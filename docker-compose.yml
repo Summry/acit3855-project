@@ -78,8 +78,7 @@ services:
       - "8100"
     depends_on:
       - "storage"
-    networks:
-      - host
+    network_mode: host
 
   audit:
     build:
@@ -95,6 +94,3 @@ services:
 # Names our volume
 volumes:
   my-db:
-
-networks:
-  host:
