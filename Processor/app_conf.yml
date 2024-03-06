@@ -4,8 +4,8 @@ datastore:
 scheduler:
   period_sec: 5
 deliverystore:
-  url: http://acit3855lab6a.westus.cloudapp.azure.com:8090/deliveries
+  url: http://localhost:8090/deliveries
 schedulestore:
-  url: http://acit3855lab6a.westus.cloudapp.azure.com:8090/schedules
+  url: http://localhost:8090/schedules
 app:
   port: 8100
