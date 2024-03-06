@@ -198,4 +198,4 @@ if __name__ == "__main__":
   t1.setDaemon(True)
   t1.start()
 
-  app.run(port=app_config['app']['port'])
+  app.run(port=app_config['app']['port'], host='0.0.0.0')
