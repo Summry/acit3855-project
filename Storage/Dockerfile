@@ -10,6 +10,4 @@ RUN pip install -r requirements.txt
 
 COPY . /app/
 
-# RUN python3 create_tables_mysql.py
-
-CMD ["python3", "app.py"]
+CMD python3 create_tables_mysql.py && python3 app.py

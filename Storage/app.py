@@ -22,7 +22,7 @@ def configure_app():
 
 app_config = configure_app()
 
-time.sleep(15)
+# time.sleep(15)
 
 hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
 client = KafkaClient(hosts=hostname)

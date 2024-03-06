@@ -10,12 +10,12 @@ def configure_app():
 
 app_config = configure_app()
 
-time.sleep(15)
+# time.sleep(15)
 
-hostname = "%s:%d" % (app_config['events']['hostname'],
-                      app_config['events']['port'])
-client = KafkaClient(hosts=hostname)
-topic = client.topics[str.encode(app_config['events']['topic'])]
+# hostname = "%s:%d" % (app_config['events']['hostname'],
+#                       app_config['events']['port'])
+# client = KafkaClient(hosts=hostname)
+# topic = client.topics[str.encode(app_config['events']['topic'])]
 
 def configure_logging():
   with open('log_conf.yml', 'r') as f:
@@ -29,10 +29,10 @@ def get_delivery_report(index):
       index (string): Index of the message queue
   """
 
-  # hostname = "%s:%d" % (app_config['events']['hostname'],
-  #                       app_config['events']['port'])
-  # client = KafkaClient(hosts=hostname)
-  # topic = client.topics[str.encode(app_config['events']['topic'])]
+  hostname = "%s:%d" % (app_config['events']['hostname'],
+                        app_config['events']['port'])
+  client = KafkaClient(hosts=hostname)
+  topic = client.topics[str.encode(app_config['events']['topic'])]
 
   consumer = topic.get_simple_consumer(reset_offset_on_start=True,
                                        consumer_timeout_ms=1000)
@@ -65,10 +65,10 @@ def get_schedule_report(index):
   Returns:
       Event Object: Event object and the corresponding status code
   """
-  # hostname = "%s:%d" % (app_config['events']['hostname'],
-  #                       app_config['events']['port'])
-  # client = KafkaClient(hosts=hostname)
-  # topic = client.topics[str.encode(app_config['events']['topic'])]
+  hostname = "%s:%d" % (app_config['events']['hostname'],
+                        app_config['events']['port'])
+  client = KafkaClient(hosts=hostname)
+  topic = client.topics[str.encode(app_config['events']['topic'])]
 
   consumer = topic.get_simple_consumer(reset_offset_on_start=True,
                                        consumer_timeout_ms=1000)
