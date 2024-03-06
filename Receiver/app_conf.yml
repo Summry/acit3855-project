@@ -1,8 +1,8 @@
 version: 1
-deliverystore:
-  url: http://acit3855lab6a.westus.cloudapp.azure.com:8090/delishery/deliveries
-schedulestore:
-  url: http://acit3855lab6a.westus.cloudapp.azure.com:8090/delishery/schedules
+# deliverystore:
+#   url: http://acit3855lab6a.westus.cloudapp.azure.com:8090/delishery/deliveries
+# schedulestore:
+#   url: http://acit3855lab6a.westus.cloudapp.azure.com:8090/delishery/schedules
 events:
   hostname: acit3855lab6a.westus.cloudapp.azure.com
   port: 9092
