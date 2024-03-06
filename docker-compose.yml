@@ -53,6 +53,8 @@ services:
       - "8080:8080"
     expose:
       - "8080"
+    depends_on:
+      - "kafka"
 
   storage:
     build:
@@ -64,6 +66,7 @@ services:
       - "8090"
     depends_on:
       - "db"
+      - "kafka"
 
   processor:
     build:
@@ -87,7 +90,7 @@ services:
     expose:
       - "8110"
     depends_on:
-      - "processor"
+      - "kafka"
 
 # Names our volume
 volumes:
