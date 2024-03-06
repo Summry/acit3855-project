@@ -1,6 +1,7 @@
 import connexion, yaml, logging, uuid, logging.config, datetime, json
 from pykafka import KafkaClient
 from connexion import NoContent
+import time
 
 def configure_app():
   with open('app_conf.yml', 'r') as f:
@@ -8,6 +9,8 @@ def configure_app():
   return app_config
 
 app_config = configure_app()
+
+time.sleep(15)
 
 def configure_logging():
   with open('log_conf.yml', 'r') as f:

@@ -8,6 +8,7 @@ from threading import Thread
 from sqlalchemy.orm import sessionmaker
 from base import Base
 from models import Delivery, Schedule
+import time
 
 def configure_app():
   """Stores log events in the app.log file for every request
@@ -20,6 +21,12 @@ def configure_app():
   return app_config
 
 app_config = configure_app()
+
+time.sleep(15)
+
+hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
+client = KafkaClient(hosts=hostname)
+topic = client.topics[str.encode(app_config['events']['topic'])]
 
 # Database Credential Constants
 db_creds = app_config['datastore']
@@ -170,9 +177,9 @@ def get_schedules(start_timestamp, end_timestamp):
 
 def process_messages():
   """ Process event messages """
-  hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
-  client = KafkaClient(hosts=hostname)
-  topic = client.topics[str.encode(app_config['events']['topic'])]
+  # hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
+  # client = KafkaClient(hosts=hostname)
+  # topic = client.topics[str.encode(app_config['events']['topic'])]
 
   consumer = topic.get_simple_consumer(consumer_group=b'event_group', 
                                        reset_offset_on_start=False, 
