@@ -278,4 +278,4 @@ if __name__ == "__main__":
 
   init_scheduler()
 
-  app.run(port=app_config['app']['port'])
+  app.run(port=app_config['app']['port'], host='0.0.0.0')
