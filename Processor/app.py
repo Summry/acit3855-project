@@ -141,10 +141,12 @@ def process_data(current_stats, deliveries, schedules, curr_date):
   num_of_schedules = current_stats['num_of_schedules'] + len(schedules)
 
   for delivery in deliveries:
+    print(delivery)
     log_get_debug("DELIVERIES", trace_id=delivery['trace_id'])
     total_delivery_items += delivery['item_quantity']
 
   for schedule in schedules:
+    print(schedule)
     log_get_debug("SCHEDULES", trace_id=schedule['trace_id'])
     total_scheduled_deliveries += schedule['number_of_deliveries']
   
