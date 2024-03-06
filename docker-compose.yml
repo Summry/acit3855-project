@@ -78,7 +78,7 @@ services:
       - "8100"
     depends_on:
       - "storage"
-    network_mode: host
+    network_mode: "host"
 
   audit:
     build:
