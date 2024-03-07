@@ -78,10 +78,13 @@ services:
     expose:
       - "8090"
     depends_on:
+      - "db"
+      - "kafka"
       # kafka:
       #   condition: service_started
-      db:
-        condition: service_healthy
+      # db:
+      #   condition: service_healthy
+    command: ["./wait-for-it.sh", "db:3306", "--", "python3", "create_tables_mysql.py"]
 
   processor:
     build:
