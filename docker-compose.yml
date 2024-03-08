@@ -84,8 +84,6 @@ services:
       #   condition: service_started
       # db:
       #   condition: service_healthy
-    command:
-      ["chmod +x wait-for-it.sh", "&&", "./wait-for-it.sh", "db:3306", "--", "python3", "create_tables_mysql.py"]
 
   processor:
     build:

@@ -12,4 +12,4 @@ COPY . /app/
 
 # CMD python3 create_tables_mysql.py && python3 app.py
 
-CMD [ "python3", "app.py" ]
+CMD [ "./start.sh" ]
