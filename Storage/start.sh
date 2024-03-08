@@ -2,7 +2,7 @@
 
 chmod +x wait-for-it.sh
 
-./wait-for-it.sh db:3306
+./wait-for-it.sh db:3306 --timeout=300
 
 if [ $? -eq 0 ]; then
   python3 create_tables_mysql.py
