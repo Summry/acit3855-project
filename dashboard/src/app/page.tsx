@@ -3,46 +3,80 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+type DelisheryStats = {
+  stats: {
+    num_of_deliveries: number;
+    num_of_schedules: number;
+    total_delivery_items: number;
+    total_scheduled_deliveries: number;
+  };
+  audit: {
+    event1: {
+      delivery_id: string;
+      item_quantity: number;
+      requested_date: string;
+      trace_id: string;
+      user_id: string;
+    };
+    event2: {
+      created_date: string;
+      number_of_deliveries: number;
+      schedule_id: string;
+      trace_id: string;
+      user_id: string;
+    };
+  };
+  lastUpdated: string;
+};
+
 export default function Home() {
-  const [delisheryStats, setDelisheryStats] = useState({
-    stats: {
-      num_of_deliveries: 0,
-      num_of_schedules: 0,
-      total_delivery_items: 0,
-      total_scheduled_deliveries: 0,
-    },
-    audit: {
-      event1: {},
-      event2: {},
-    },
-    lastUpdated: "",
-  });
+  const [delisheryStats, setDelisheryStats] = useState<DelisheryStats>();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
-      const statsResponse = await fetch(
-        "http://acit3855lab6a.westus.cloudapp.azure.com:8100/stats"
-      );
-      const statsData = await statsResponse.json();
+      try {
+        const statsResponse = await fetch(
+          "http://acit3855lab6a.westus.cloudapp.azure.com:8100/stats"
+        );
+        const statsData = await statsResponse.json();
 
-      // const auditResponse = await fetch(
-      //   "http://acit3855lab6a.westus.cloudapp.azure.com:8110/delishery/delivery?index=0"
-      // );
-      // const auditData = await auditResponse.json();
+        // const auditResponse = await fetch(
+        //   "http://acit3855lab6a.westus.cloudapp.azure.com:8110/delishery/delivery?index=0"
+        // );
+        // const auditData = await auditResponse.json();
 
-      setDelisheryStats({
-        stats: statsData,
-        audit: {
-          event1: {},
-          event2: {},
-        },
-        lastUpdated: new Date().toLocaleString(),
-      });
-      setIsLoading(false);
+        setDelisheryStats((prev) => ({
+          stats: statsData,
+          audit: {
+            event1: {
+              delivery_id: "",
+              item_quantity: 0,
+              requested_date: "",
+              trace_id: "",
+              user_id: "",
+            },
+            event2: {
+              created_date: "",
+              number_of_deliveries: 0,
+              schedule_id: "",
+              trace_id: "",
+              user_id: "",
+            },
+          },
+          lastUpdated: new Date().toLocaleString(),
+        }));
+        setIsLoading(false);
+      } catch (e) {
+        console.error("There was an error fetching data:", e);
+      }
     };
 
-    fetchStats();
+    const interval = setInterval(() => {
+      fetchStats();
+    }, 2000);
+
+    return () => clearInterval(interval);
   }, [delisheryStats]);
 
   return (
@@ -70,15 +104,36 @@ export default function Home() {
         <div>
           <div>
             <h3>Deliveries</h3>
-            <p>
-              Number of deliveries: {delisheryStats.stats.num_of_deliveries}
-            </p>
-            <p>
-              Total delivery items: {delisheryStats.stats.total_delivery_items}
-            </p>
+            {isLoading && <p>Loading...</p>}
+            {delisheryStats?.stats && (
+              <div>
+                <p>
+                  Total deliveries:{" "}
+                  {delisheryStats?.stats.total_scheduled_deliveries}
+                </p>
+                <p>
+                  Total delivery items:{" "}
+                  {delisheryStats?.stats.total_delivery_items}
+                </p>
+              </div>
+            )}
+          </div>
+          <div>
+            <h3>Schedules</h3>
+            {isLoading && <p>Loading...</p>}
+            {delisheryStats?.stats && (
+              <div>
+                <p>Total schedules: {delisheryStats?.stats.num_of_schedules}</p>
+                <p>
+                  Total deliveries: {delisheryStats?.stats.num_of_deliveries}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </section>
+
+      <p className="font-bold">Last Updated: {delisheryStats?.lastUpdated}</p>
 
       <h2>Home</h2>
       <h3>Home</h3>
