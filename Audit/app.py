@@ -1,7 +1,7 @@
-import connexion, yaml, logging, uuid, logging.config, datetime, json
+import connexion, yaml, logging, logging.config, json
 from pykafka import KafkaClient
-from connexion import NoContent
-import time
+from connexion.middleware import MiddlewarePosition
+from starlette.middleware.cors import CORSMiddleware
 
 def configure_app():
   with open('app_conf.yml', 'r') as f:
@@ -94,6 +94,14 @@ def get_schedule_report(index):
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("delishery.yaml", strict_validation=True, validate_responses=True)
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=["*"],
+  position=MiddlewarePosition.BEFORE_EXCEPTION,
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"]
+)
 
 if __name__ == "__main__":
   configure_logging()

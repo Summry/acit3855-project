@@ -6,6 +6,8 @@ from stats import Stats
 from base import Base
 from create_database import create_db
 from sqlalchemy.orm import sessionmaker
+from connexion.middleware import MiddlewarePosition
+from starlette.middleware.cors import CORSMiddleware
 
 def configure_app():
   """Stores log events in the app.log file for every request
@@ -271,6 +273,14 @@ def check_db_exists():
 
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("delishery.yaml", strict_validation=True, validate_responses=True)
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=["*"],
+  position=MiddlewarePosition.BEFORE_EXCEPTION,
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"]
+)
 
 if __name__ == "__main__":
   configure_logging()
