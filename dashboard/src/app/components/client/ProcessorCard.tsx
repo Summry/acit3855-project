@@ -26,7 +26,7 @@ export default function ProcessorCard() {
       <p>Total delivery items: {processorStats.total_delivery_items}</p>
     </div>
   ) : (
-    <p>Loading...</p>
+    <div className="border-gray-300 h-10 w-10 animate-spin rounded-full border-2 border-t-blue-600" />
   );
 
   const schedulesContent = processorStats ? (
@@ -37,7 +37,7 @@ export default function ProcessorCard() {
       </p>
     </div>
   ) : (
-    <p>Loading...</p>
+    <div className="border-gray-300 h-10 w-10 animate-spin rounded-full border-2 border-t-blue-600" />
   );
 
   return (
@@ -55,7 +55,10 @@ export default function ProcessorCard() {
       {lastUpdated ? (
         <p className="font-bold pb-2">Last Updated: {lastUpdated}</p>
       ) : (
-        <p className="font-bold pb-2">Last Updated: Loading...</p>
+        <p className="font-bold pb-2 flex flex-col items-center">
+          Last Updated:{" "}
+          <div className="border-gray-300 h-10 w-10 animate-spin rounded-full border-2 border-t-blue-600" />
+        </p>
       )}
     </div>
   );

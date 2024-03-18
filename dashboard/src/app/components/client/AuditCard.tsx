@@ -18,21 +18,35 @@ export default function AuditCard() {
     return () => clearTimeout(timeout);
   }, [auditStats]);
 
+  const deliveryContent =
+    auditStats?.delivery.item_quantity >= 1 ? (
+      <div className="flex flex-col items-center p-4">
+        <p className="font-bold">First Delivery Event</p>
+        <p>{JSON.stringify(auditStats?.delivery)}</p>
+      </div>
+    ) : (
+      <p>There is currently no Delivery Audit log</p>
+    );
+
+  const scheduleContent =
+    auditStats?.schedule.number_of_deliveries >= 1 ? (
+      <div className="flex flex-col items-center p-4">
+        <p className="font-bold">First Schedule Event</p>
+        <p>{JSON.stringify(auditStats?.schedule)}</p>
+      </div>
+    ) : (
+      <p>There is currently no Schedule Audit log</p>
+    );
+
   return (
     <section>
       {auditStats ? (
         <div>
-          <div className="flex flex-col items-center p-4">
-            <p className="font-bold">First Delivery Event</p>
-            <p>{JSON.stringify(auditStats.delivery)}</p>
-          </div>
-          <div className="flex flex-col items-center p-4">
-            <p className="font-bold">First Schedule Event</p>
-            <p>{JSON.stringify(auditStats.schedule)}</p>
-          </div>
+          {deliveryContent}
+          {scheduleContent}
         </div>
       ) : (
-        <p>Loading...</p>
+        <div className="border-gray-300 h-10 w-10 animate-spin rounded-full border-2 border-t-blue-600" />
       )}
     </section>
   );

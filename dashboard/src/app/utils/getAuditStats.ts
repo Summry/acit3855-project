@@ -35,5 +35,21 @@ export default async function getAuditStats() {
     return { delivery: auditDelivery, schedule: auditSchedule };
   } catch (error) {
     console.error(error);
+    return {
+      delivery: {
+        delivery_id: "",
+        item_quantity: 0,
+        requested_date: "",
+        trace_id: "",
+        user_id: "",
+      },
+      schedule: {
+        created_date: "",
+        number_of_deliveries: 0,
+        schedule_id: "",
+        trace_id: "",
+        user_id: "",
+      },
+    };
   }
 }
