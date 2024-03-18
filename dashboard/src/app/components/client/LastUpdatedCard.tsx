@@ -14,5 +14,13 @@ export default function LastUpdatedCard() {
     return () => clearInterval(interval);
   });
 
-  return <div>{lastUpdated}</div>;
+  return (
+    <div>
+      {lastUpdated ? (
+        <p className="font-bold">Last Updated: {lastUpdated}</p>
+      ) : (
+        <p className="font-bold">Last Updated: Loading...</p>
+      )}
+    </div>
+  );
 }

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import ProcessorCard from "./components/client/ProcessorCard";
+import LastUpdatedCard from "./components/client/LastUpdatedCard";
 
 export default function Home() {
   return (
@@ -26,9 +27,8 @@ export default function Home() {
 
       <section>
         <h2>Latest Stats</h2>
-        <div>
-          <ProcessorCard />
-        </div>
+        <ProcessorCard />
+        <LastUpdatedCard />
       </section>
     </main>
   );
