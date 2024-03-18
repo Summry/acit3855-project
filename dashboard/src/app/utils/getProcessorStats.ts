@@ -1,4 +1,4 @@
-import { ProcessorStats } from "../types/ProcessorStats";
+import { IProcessorStats } from "../types/ProcessorStats";
 
 export default async function getProcessorStats() {
   try {
@@ -10,7 +10,7 @@ export default async function getProcessorStats() {
       throw new Error("There was an error fetching Processor Stats data.");
     }
 
-    const statsData: ProcessorStats = await statsResponse.json();
+    const statsData: IProcessorStats = await statsResponse.json();
 
     return statsData;
   } catch (error) {
