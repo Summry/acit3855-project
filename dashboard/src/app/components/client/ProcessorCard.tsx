@@ -1,11 +1,11 @@
 "use client";
 
-import { ProcessorStats } from "@/app/types/ProcessorStats";
+import { IProcessorStats } from "@/app/types/ProcessorStats";
 import getProcessorStats from "@/app/utils/getProcessorStats";
 import { useEffect, useState } from "react";
 
 export default function ProcessorCard() {
-  const [processorStats, setProcessorStats] = useState<ProcessorStats>();
+  const [processorStats, setProcessorStats] = useState<IProcessorStats>();
   const [lastUpdated, setLastUpdated] = useState<string>("");
 
   useEffect(() => {

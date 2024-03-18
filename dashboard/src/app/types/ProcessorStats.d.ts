@@ -1,4 +1,4 @@
-export interface ProcessorStats {
+export interface IProcessorStats {
   num_of_deliveries: number;
   num_of_schedules: number;
   total_delivery_items: number;
