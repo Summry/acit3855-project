@@ -1,34 +1,18 @@
 "use client";
 
-import Image from "next/image";
 import ProcessorCard from "./components/client/ProcessorCard";
-import LastUpdatedCard from "./components/client/LastUpdatedCard";
+import AuditCard from "./components/client/AuditCard";
+import Logo from "./components/client/Logo";
 
 export default function Home() {
   return (
     <main className="h-screen flex flex-col items-center">
-      <figure className="flex flex-col items-center">
-        <Image
-          src="/food-delivery.png"
-          alt="Delishery"
-          height={150}
-          width={150}
-        />
-        <figcaption>
-          <a
-            href="https://www.flaticon.com/free-icons/food-delivery"
-            title="food delivery icons"
-            className="hover:text-blue-700 hover:underline text-xs"
-          >
-            Food delivery icons created by lapiyee - Flaticon
-          </a>
-        </figcaption>
-      </figure>
-
-      <section>
+      <Logo />
+      <section className="flex flex-col justify-center items-center m-auto">
         <h2>Latest Stats</h2>
         <ProcessorCard />
-        <LastUpdatedCard />
+        <h2>Audit Endpoints</h2>
+        <AuditCard />
       </section>
     </main>
   );
