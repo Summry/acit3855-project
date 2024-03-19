@@ -44,19 +44,6 @@ services:
     # Where our data will be persisted
     volumes:
       - my-db:/var/lib/mysql
-    # healthcheck:
-    #   test:
-    #     [
-    #       "CMD",
-    #       "mysqladmin",
-    #       "ping",
-    #       "-h",
-    #       "db",
-    #       "-u${MYSQL_USER}",
-    #       "-p${MYSQL_PASSWORD}",
-    #     ]
-    #   timeout: 20s
-    #   retries: 10
 
   receiver:
     build:
@@ -80,10 +67,6 @@ services:
     depends_on:
       - "db"
       - "kafka"
-      # kafka:
-      #   condition: service_started
-      # db:
-      #   condition: service_healthy
 
   processor:
     build:
@@ -107,6 +90,18 @@ services:
       - "8110"
     depends_on:
       - "kafka"
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    depends_on:
+      - "processor"
+      - "audit"
 
 # Names our volume
 volumes:

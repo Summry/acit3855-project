@@ -8,7 +8,7 @@ export default function ProcessorCard() {
   const [processorStats, setProcessorStats] = useState<IProcessorStats>();
   const [lastUpdated, setLastUpdated] = useState<string>("");
 
-  useEffect(() => {
+  useEffect(() => { 
     const fetchData = async () => {
       const processorStats = await getProcessorStats();
       setProcessorStats(processorStats);
