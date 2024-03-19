@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { IAuditStats } from "@/app/types/AuditStats";
 import getAuditStats from "@/app/utils/getAuditStats";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AuditCard() {
   const [auditStats, setAuditStats] = useState<IAuditStats>();
@@ -46,7 +47,11 @@ export default function AuditCard() {
           {scheduleContent}
         </div>
       ) : (
-        <div className="border-gray-300 h-10 w-10 animate-spin rounded-full border-2 border-t-blue-600" />
+        <div className="space-y-2 pt-2">
+          <Skeleton className="h-4 w-[350px]" />
+          <Skeleton className="h-4 w-[350px]" />
+          <Skeleton className="h-4 w-[275px]" />
+        </div>
       )}
     </section>
   );
