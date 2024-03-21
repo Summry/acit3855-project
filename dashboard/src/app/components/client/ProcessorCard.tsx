@@ -51,11 +51,11 @@ export default function ProcessorCard() {
     <div className="flex flex-col justify-center items-center">
       <div className="flex justify-around items-center">
         <div className="flex flex-col p-4">
-          <code>Deliveries</code>
+          <h3>Deliveries</h3>
           {deliveriesContent}
         </div>
         <div className="flex flex-col p-4">
-          <code>Schedules</code>
+          <h3>Schedules</h3>
           {schedulesContent}
         </div>
       </div>
