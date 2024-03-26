@@ -6,6 +6,8 @@ services:
     ports:
       - "2181"
     hostname: zookeeper
+    volumes:
+      - ${ZOOKEEPER_VOLUME}
 
   kafka:
     image: wurstmeister/kafka
@@ -21,8 +23,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: ${KAFKA_ADVERTISED_LISTENERS}
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: ${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
       KAFKA_ZOOKEEPER_CONNECT: ${KAFKA_ZOOKEEPER_CONNECT}
+      KAFKA_LOGS_DIRS: ${KAFKA_LOGS_DIRS}
+      KAFKA_BROKER_ID: ${KAFKA_BROKER_ID}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ${KAFKA_VOLUME}
     depends_on:
       - "zookeeper"
 

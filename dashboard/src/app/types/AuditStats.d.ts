@@ -16,5 +16,7 @@ export interface IAuditSchedule {
 
 export interface IAuditStats {
   delivery: AuditDelivery;
+  deliveryIndex: number;
   schedule: AuditSchedule;
+  scheduleIndex: number;
 }
