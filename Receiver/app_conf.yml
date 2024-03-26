@@ -7,5 +7,7 @@ events:
   hostname: acit3855lab6a.westus.cloudapp.azure.com
   port: 9092
   topic: events
+  max_retries: 10
+  retry_interval: 5
 app:
   port: 8080
