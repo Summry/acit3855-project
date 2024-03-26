@@ -19,38 +19,36 @@ export default function AuditCard() {
     return () => clearTimeout(timeout);
   }, [auditStats]);
 
-  const deliveryContent =
-    auditStats?.delivery.item_quantity >= 1 ? (
-      <div className="flex flex-col items-center p-4">
-        <p className="font-bold">First Delivery Event</p>
-        <p>{JSON.stringify(auditStats?.delivery)}</p>
-      </div>
-    ) : (
-      <p>There is currently no Delivery Audit log</p>
-    );
+  const deliveryContent = auditStats?.delivery ? (
+    <div className="flex flex-col items-center p-4">
+      <p className="font-bold">Delivery Event - {auditStats.deliveryIndex}</p>
+      <p>{JSON.stringify(auditStats.delivery)}</p>
+    </div>
+  ) : (
+    <p>There is no Delivery Audit log at index {auditStats?.deliveryIndex}</p>
+  );
 
-  const scheduleContent =
-    auditStats?.schedule.number_of_deliveries >= 1 ? (
-      <div className="flex flex-col items-center p-4">
-        <p className="font-bold">First Schedule Event</p>
-        <p>{JSON.stringify(auditStats?.schedule)}</p>
-      </div>
-    ) : (
-      <p>There is currently no Schedule Audit log</p>
-    );
+  const scheduleContent = auditStats?.schedule ? (
+    <div className="flex flex-col items-center p-4">
+      <p className="font-bold">Schedule Event - {auditStats.scheduleIndex}</p>
+      <p>{JSON.stringify(auditStats.schedule)}</p>
+    </div>
+  ) : (
+    <p>There is no Schedule Audit log at index {auditStats?.scheduleIndex}</p>
+  );
 
   return (
     <section>
       {auditStats ? (
-        <div>
+        <div className="space-y-2 pt-2">
           {deliveryContent}
           {scheduleContent}
         </div>
       ) : (
         <div className="space-y-2 pt-2">
           <Skeleton className="h-4 w-[350px]" />
-          <Skeleton className="h-4 w-[350px]" />
-          <Skeleton className="h-4 w-[275px]" />
+          <Skeleton className="h-4 w-[350px] delay-150" />
+          <Skeleton className="h-4 w-[275px] delay-300" />
         </div>
       )}
     </section>

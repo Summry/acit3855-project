@@ -22,7 +22,7 @@ export default function ProcessorCard() {
   }, [processorStats]);
 
   const deliveriesContent = processorStats ? (
-    <div className="flex flex-col pt-1">
+    <div className="space-y-2 pt-2">
       <p>Total deliveries: {processorStats.num_of_deliveries}</p>
       <p>Total delivery items: {processorStats.total_delivery_items}</p>
     </div>
@@ -34,7 +34,7 @@ export default function ProcessorCard() {
   );
 
   const schedulesContent = processorStats ? (
-    <div className="flex flex-col pt-1">
+    <div className="space-y-2 pt-2">
       <p>Total schedules: {processorStats.num_of_schedules}</p>
       <p>
         Total scheduled deliveries: {processorStats.total_scheduled_deliveries}
@@ -59,17 +59,18 @@ export default function ProcessorCard() {
           {schedulesContent}
         </div>
       </div>
+
       {lastUpdated ? (
         <p className="font-bold pb-2">Last Updated: {lastUpdated}</p>
       ) : (
-        <p className="font-bold pb-2 flex justify-center w-[100%] items-center">
+        <div className="font-bold pb-2 flex justify-center w-[100%] items-center">
           Last Updated:{" "}
           <div className="flex items-center pl-2 space-x-1">
             <Skeleton className="h-4 w-4 rounded-full delay-75" />
             <Skeleton className="h-4 w-4 rounded-full delay-150" />
             <Skeleton className="h-4 w-4 rounded-full delay-300" />
           </div>
-        </p>
+        </div>
       )}
     </div>
   );

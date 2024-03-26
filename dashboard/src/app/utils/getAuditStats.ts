@@ -1,28 +1,15 @@
 import { IAuditDelivery, IAuditSchedule } from "../types/AuditStats";
-import getProcessorStats from "./getProcessorStats";
 
 export default async function getAuditStats() {
+  const randomDeliveryIndex = Math.floor(Math.random() * 100);
+  const randomScheduleIndex = Math.floor(Math.random() * 100);
+
   try {
-    const processorStats = await getProcessorStats();
-
-    if (!processorStats) {
-      throw new Error(
-        "There was an error fetching Processor Stats from Audit."
-      );
-    }
-
-    // const randomDeliveryIndex = Math.floor(
-    //   Math.random() * processorStats.num_of_deliveries
-    // );
-    // const randomScheduleIndex = Math.floor(
-    //   Math.random() * processorStats.num_of_schedules
-    // );
-
     const auditDeliveryResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_AUDIT_API_URL}/delivery?index=0`
+      `${process.env.NEXT_PUBLIC_AUDIT_API_URL}/delivery?index=${randomDeliveryIndex}`
     );
     const auditScheduleResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_AUDIT_API_URL}/schedule?index=0`
+      `${process.env.NEXT_PUBLIC_AUDIT_API_URL}/schedule?index=${randomScheduleIndex}`
     );
 
     if (auditDeliveryResponse.status === 404) {
@@ -48,24 +35,19 @@ export default async function getAuditStats() {
     const auditDelivery: IAuditDelivery = await auditDeliveryResponse.json();
     const auditSchedule: IAuditSchedule = await auditScheduleResponse.json();
 
-    return { delivery: auditDelivery, schedule: auditSchedule };
+    return {
+      delivery: auditDelivery,
+      deliveryIndex: randomDeliveryIndex,
+      schedule: auditSchedule,
+      scheduleIndex: randomScheduleIndex,
+    };
   } catch (error) {
     console.error(error);
     return {
-      delivery: {
-        delivery_id: "",
-        item_quantity: 0,
-        requested_date: "",
-        trace_id: "",
-        user_id: "",
-      },
-      schedule: {
-        created_date: "",
-        number_of_deliveries: 0,
-        schedule_id: "",
-        trace_id: "",
-        user_id: "",
-      },
+      delivery: null,
+      deliveryIndex: randomDeliveryIndex,
+      schedule: null,
+      scheduleIndex: randomScheduleIndex,
     };
   }
 }
