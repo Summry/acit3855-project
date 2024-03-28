@@ -5,3 +5,4 @@ events:
   topic: events
 app:
   port: 8110
+  host: '0.0.0.0'
