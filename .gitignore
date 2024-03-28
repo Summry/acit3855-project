@@ -30,4 +30,4 @@ Description/
 .docker/
 
 # ENV 
-**.env
+*.env
