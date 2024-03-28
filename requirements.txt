@@ -3,6 +3,7 @@ anyio==4.3.0
 APScheduler==3.10.4
 asgiref==3.7.2
 attrs==23.2.0
+autopep8==2.1.0
 blinker==1.7.0
 certifi==2024.2.2
 charset-normalizer==3.3.2
@@ -24,6 +25,7 @@ jsonschema-specifications==2023.12.1
 kazoo==2.5.0
 MarkupSafe==2.1.5
 mysql-connector-python==8.3.0
+pycodestyle==2.11.1
 pykafka==2.8.0
 PyMySQL==1.1.0
 python-dotenv==1.0.1
@@ -39,6 +41,7 @@ SQLAlchemy==2.0.27
 starlette==0.37.1
 swagger_ui_bundle==1.1.0
 tabulate==0.9.0
+tomli==2.0.1
 typing_extensions==4.9.0
 tzlocal==5.2
 urllib3==2.2.1
