@@ -117,4 +117,4 @@ app.add_middleware(
 if __name__ == "__main__":
     configure_logging()
 
-    app.run(port=app_config['app']['port'], host='0.0.0.0')
+    app.run(port=app_config['app']['port'], host=app_config['app']['host'])
