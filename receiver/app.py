@@ -1,13 +1,14 @@
-import connexion
-import yaml
-import logging
-import uuid
-import logging.config
 import datetime
 import json
-from pykafka import KafkaClient
-from connexion import NoContent
+import logging
+import logging.config
 import time
+import uuid
+
+import connexion
+import yaml
+from connexion import NoContent
+from pykafka import KafkaClient
 
 
 def configure_app():

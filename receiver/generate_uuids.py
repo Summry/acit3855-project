@@ -1,5 +1,5 @@
-import uuid
 import csv
+import uuid
 
 """
 The purpose of this file is to help Apache JMeter 

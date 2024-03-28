@@ -1,19 +1,19 @@
-import connexion
-import yaml
-import logging
-import logging.config
 import datetime
 import json
-from connexion import NoContent
+import logging
+import logging.config
+import time
+from threading import Thread
 
-from sqlalchemy import and_, create_engine
+import connexion
+import yaml
+from base import Base
+from connexion import NoContent
+from models import Delivery, Schedule
 from pykafka import KafkaClient
 from pykafka.common import OffsetType
-from threading import Thread
+from sqlalchemy import and_, create_engine
 from sqlalchemy.orm import sessionmaker
-from base import Base
-from models import Delivery, Schedule
-import time
 
 
 def configure_app():
