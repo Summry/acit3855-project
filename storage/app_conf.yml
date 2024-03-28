@@ -13,3 +13,4 @@ events:
   retry_interval: 5
 app:
   port: 8090
+  host: '0.0.0.0'
