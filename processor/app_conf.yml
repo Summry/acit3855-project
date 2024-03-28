@@ -9,3 +9,4 @@ schedulestore:
   url: http://localhost:8090/schedules
 app:
   port: 8100
+  host: '0.0.0.0'
