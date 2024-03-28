@@ -257,7 +257,7 @@ def get_stats():
     """
     logger = logging.getLogger('basicLogger')
     logger.info(
-        "REQUESTING CURRENT API STATISTICS...................................................................")
+        "INTEGRATION ASSIGNMENT 3 - PULLED SUCCESSFULLY...................................................................")
 
     current_stats = read_from_database()
 
