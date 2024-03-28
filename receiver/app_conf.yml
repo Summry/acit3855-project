@@ -4,7 +4,7 @@ version: 1
 # schedulestore:
 #   url: http://acit3855lab6a.westus.cloudapp.azure.com:8090/delishery/schedules
 events:
-  hostname: acit3855lab6a.westus.cloudapp.azure.com
+  hostname: kafka
   port: 9092
   topic: events
   max_retries: 10
