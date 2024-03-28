@@ -42,7 +42,9 @@ export default async function getAuditStats() {
       scheduleIndex: randomScheduleIndex,
     };
   } catch (error) {
+
     console.error(error);
+    
     return {
       delivery: null,
       deliveryIndex: randomDeliveryIndex,
