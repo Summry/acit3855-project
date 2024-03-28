@@ -1,2 +1,2 @@
-@Library('ci_functions') _
+@Library('ci_functions@main') _
 python_build('receiver', 'receiverapp')
