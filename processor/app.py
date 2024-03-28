@@ -207,7 +207,7 @@ def get_new_data(event, last_updated, curr_date):
     return requests.get(f"{app_config[f'{event}store']['url']}", params={
         "start_timestamp": last_updated,
         "end_timestamp": curr_date
-    })
+    }, timeout=10)
 
 
 def populate_stats():
