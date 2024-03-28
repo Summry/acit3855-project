@@ -54,7 +54,6 @@ services:
     build:
       context: ./receiver
       dockerfile: Dockerfile
-    # image: nazzywazzy/receiver:receiverapp
     ports:
       - "8080:8080"
     expose:
@@ -63,7 +62,6 @@ services:
       - "kafka"
 
   storage:
-    # image: nazzywazzy/storage:storageapp
     build:
       context: ./storage
       dockerfile: Dockerfile
@@ -76,10 +74,11 @@ services:
       - "kafka"
 
   processor:
-    # image: nazzywazzy/processor:processorapp
     build:
       context: ./processor
       dockerfile: Dockerfile
+    # ports:
+    #   - "8100:8100"
     expose:
       - "8100"
     depends_on:
@@ -112,4 +111,3 @@ services:
 # Names our volume
 volumes:
   my-db:
-
