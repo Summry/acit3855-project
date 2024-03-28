@@ -24,13 +24,21 @@ export default async function getAuditStats() {
       );
     }
 
-    if (!auditDeliveryResponse.ok) {
+    if (auditDeliveryResponse.status !== 200) {
       throw new Error("There was an error fetching the Audit Delivery stats.");
     }
 
-    if (!auditScheduleResponse.ok) {
+    if (auditScheduleResponse.status !== 200) {
       throw new Error("There was an error fetching the Audit Schedule stats.");
     }
+
+    // if (!auditDeliveryResponse.ok) {
+    //   throw new Error("There was an error fetching the Audit Delivery stats.");
+    // }
+
+    // if (!auditScheduleResponse.ok) {
+    //   throw new Error("There was an error fetching the Audit Schedule stats.");
+    // }
 
     const auditDelivery: IAuditDelivery = await auditDeliveryResponse.json();
     const auditSchedule: IAuditSchedule = await auditScheduleResponse.json();

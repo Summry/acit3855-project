@@ -6,11 +6,11 @@ export default async function getProcessorStats() {
       `${process.env.NEXT_PUBLIC_PROCESSOR_API_URL}`
     );
 
-    if (!statsResponse.ok) {
-      throw new Error("There was an error fetching Processor Stats data.");
-    }
+    // if (!statsResponse.ok) {
+    //   throw new Error("There was an error fetching Processor Stats data.");
+    // }
 
-    if (!statsResponse) {
+    if (statsResponse.status != 200) {
       throw new Error("There was an error fetching Processor Stats data.");
     }
 
