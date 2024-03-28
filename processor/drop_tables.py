@@ -1,4 +1,5 @@
 import sqlite3
+
 import yaml
 
 with open('app_conf.yml', 'r') as f:

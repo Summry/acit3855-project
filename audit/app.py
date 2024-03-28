@@ -1,10 +1,11 @@
-import connexion
-import yaml
+import json
 import logging
 import logging.config
-import json
-from pykafka import KafkaClient
+
+import connexion
+import yaml
 from connexion.middleware import MiddlewarePosition
+from pykafka import KafkaClient
 from starlette.middleware.cors import CORSMiddleware
 
 

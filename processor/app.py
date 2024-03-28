@@ -1,17 +1,18 @@
-import connexion
-import yaml
 import logging
 import logging.config
-import requests
 from datetime import datetime
-from sqlalchemy import create_engine
+
+import connexion
+import requests
+import yaml
 from apscheduler.schedulers.background import BackgroundScheduler
-from stats import Stats
 from base import Base
-from create_database import create_db
-from sqlalchemy.orm import sessionmaker
 from connexion.middleware import MiddlewarePosition
+from create_database import create_db
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from starlette.middleware.cors import CORSMiddleware
+from stats import Stats
 
 
 def configure_app():
