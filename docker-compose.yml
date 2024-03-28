@@ -51,7 +51,10 @@ services:
       - my-db:/var/lib/mysql
 
   receiver:
-    image: nazzywazzy/receiver:receiverapp
+    build:
+      context: ./receiver
+      dockerfile: Dockerfile
+    # image: nazzywazzy/receiver:receiverapp
     ports:
       - "8080:8080"
     expose:
@@ -60,7 +63,10 @@ services:
       - "kafka"
 
   storage:
-    image: nazzywazzy/storage:storageapp
+    # image: nazzywazzy/storage:storageapp
+    build:
+      context: ./storage
+      dockerfile: Dockerfile
     ports:
       - "8090:8090"
     expose:
@@ -70,7 +76,10 @@ services:
       - "kafka"
 
   processor:
-    image: nazzywazzy/processor:processorapp
+    # image: nazzywazzy/processor:processorapp
+    build:
+      context: ./processor
+      dockerfile: Dockerfile
     expose:
       - "8100"
     depends_on:
@@ -103,3 +112,4 @@ services:
 # Names our volume
 volumes:
   my-db:
+
