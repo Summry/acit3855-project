@@ -40,7 +40,7 @@ export default function AuditCard() {
   return (
     <section>
       {auditStats ? (
-        <div className="space-y-2 pt-2 flex flex-col justify-center">
+        <div className="space-y-2 pt-2 flex flex-col items-center">
           {deliveryContent}
           {scheduleContent}
         </div>
