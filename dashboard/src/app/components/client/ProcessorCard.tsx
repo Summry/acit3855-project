@@ -49,7 +49,7 @@ export default function ProcessorCard() {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-end w-[500px]">
         <div className="flex flex-col p-4">
           <h3>Deliveries</h3>
           {deliveriesContent}
