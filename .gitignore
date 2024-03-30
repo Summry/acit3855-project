@@ -31,4 +31,4 @@ Description/
 
 # ENV 
 *.env
-**.env
+dashboard/*.env
