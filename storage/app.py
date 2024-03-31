@@ -102,6 +102,7 @@ while not connected_to_kafka:
         )
 
         connected_to_kafka = True
+        logger.info("Successfully connected to Kafka. Hostname: %s, Port: %d" % (app_config['events']['hostname'], app_config['events']['port']))
     except:
         logger.error("Failed to connect to Kafka. Retrying in 5 seconds...")
         time.sleep(app_config['events']['retry_interval'])
