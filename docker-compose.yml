@@ -79,6 +79,8 @@ services:
       dockerfile: Dockerfile
     # ports:
     #   - "8100:8100"
+    volumes:
+      - processor-data:/data
     expose:
       - "8100"
     depends_on:
@@ -111,3 +113,6 @@ services:
 # Names our volume
 volumes:
   my-db:
+  processor-data:
+  kafka-data:
+  zookeeper-data:

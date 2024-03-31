@@ -15,6 +15,7 @@ from pykafka.common import OffsetType
 from sqlalchemy import and_, create_engine
 from sqlalchemy.orm import sessionmaker
 
+time.sleep(10)
 
 def configure_app():
     """Stores log events in the app.log file for every request
@@ -26,8 +27,17 @@ def configure_app():
         app_config = yaml.safe_load(f.read())
     return app_config
 
-
 app_config = configure_app()
+
+def configure_logging():
+    """Logging configuration - creates app.log file
+    """
+    with open('log_conf.yml', 'r') as f:
+        log_config = yaml.safe_load(f.read())
+        logging.config.dictConfig(log_config)
+
+configure_logging()
+logger = logging.getLogger('basicLogger')
 
 # Database Credential Constants
 db_creds = app_config['datastore']
@@ -37,29 +47,22 @@ DB_HOST = db_creds['hostname']
 DB_PORT = db_creds['port']
 DB_NAME = db_creds['db']
 
-DB_ENGINE = create_engine(
-    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}", pool_pre_ping=True, pool_size=10, pool_recycle=600)
-Base.metadata.bind = DB_ENGINE
-DB_SESSION = sessionmaker(bind=DB_ENGINE)
+connected_to_db = False
 
+while not connected_to_db:
+    try:
+        logger.info(f"Connecting to Database... Hostname: {DB_HOST}, Port: {DB_PORT}")
 
-def log_db_info():
-    """Logs database connection details
-    """
-    logger = logging.getLogger('basicLogger')
-    logger.info(f"Connecting to DB. Hostname:{DB_HOST}, Port:{DB_PORT}")
+        DB_ENGINE = create_engine(
+            f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}", pool_pre_ping=True, pool_size=20, pool_recycle=300)
+        Base.metadata.bind = DB_ENGINE
+        DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
-
-log_db_info()
-
-
-def configure_logging():
-    """Logging configuration - creates app.log file
-    """
-    with open('log_conf.yml', 'r') as f:
-        log_config = yaml.safe_load(f.read())
-        logging.config.dictConfig(log_config)
-
+        connected_to_db = True
+        logger.info(f"Successfully connected to the MySQL DB. Hostname: {DB_HOST}, Port: {DB_PORT}")
+    except:
+        logger.error("Failed to connect to DB. Retrying in 5 seconds...")
+        time.sleep(app_config['datastore']['retry_interval'])
 
 def log_post_info(event, trace_id):
     """Logs requests
@@ -68,7 +71,7 @@ def log_post_info(event, trace_id):
         event (string): event type
         trace_id (string): event tracer
     """
-    logger = logging.getLogger('basicLogger')
+    # logger = logging.getLogger('basicLogger')
     logger.info(f"Stored event {event} request with a trace id of {trace_id}")
 
 
@@ -80,29 +83,28 @@ def log_get_info(event, start_timestamp, len_of_results):
         start_timestamp (string): Datetime URL query parameter
         len_of_results (int): length of the results list
     """
-    logger = logging.getLogger('basicLogger')
+    # logger = logging.getLogger('basicLogger')
     logger.info(
         f"Query for {event} after {start_timestamp} returns {len_of_results} results")
 
-max_retries = app_config['events']['max_retries']
-retry_interval = app_config['events']['retry_interval']
-retry_count = 0
+connected_to_kafka = False
 
-hostname = "%s:%d" % (
-    app_config['events']['hostname'], app_config['events']['port'])
-while retry_count < max_retries:
-    logger = logging.getLogger('basicLogger')
-    logger.info(f'Attempting to connect to Kafka ... Attempt: {retry_count}')
-
+while not connected_to_kafka:
     try:
+        hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
         client = KafkaClient(hosts=hostname)
         topic = client.topics[str.encode(app_config['events']['topic'])]
+
+        consumer = topic.get_simple_consumer(
+            consumer_group=b'event_group',
+            reset_offset_on_start=False,
+            auto_offset_reset=OffsetType.LATEST
+        )
+
+        connected_to_kafka = True
     except:
-        logger.error(f'Failed to connect to Kafka on attempt {retry_count} - Trying again')
-        retry_count += 1
-        time.sleep(retry_interval)
-        continue
-    break
+        logger.error("Failed to connect to Kafka. Retrying in 5 seconds...")
+        time.sleep(app_config['events']['retry_interval'])
 
 def write_to_database(message):
     """This function will write the body/data/payload to the database
@@ -114,10 +116,9 @@ def write_to_database(message):
     session = DB_SESSION()
 
     evt = {}
-    event_type = message['type']
     body = message['payload']
 
-    if event_type == "delivery":
+    if message['type'] == "delivery":
         evt = Delivery(
             delivery_id=body['delivery_id'],
             user_id=body['user_id'],
@@ -125,7 +126,7 @@ def write_to_database(message):
             trace_id=body['trace_id']
         )
 
-    elif event_type == "schedule":
+    elif message['type'] == "schedule":
         evt = Schedule(
             schedule_id=body['schedule_id'],
             user_id=body['user_id'],
@@ -138,7 +139,7 @@ def write_to_database(message):
     session.commit()
     session.close()
 
-    log_post_info(event_type, body['trace_id'])
+    log_post_info(message['type'], body['trace_id'])
 
 
 def get_deliveries(start_timestamp, end_timestamp):
@@ -212,48 +213,22 @@ def get_schedules(start_timestamp, end_timestamp):
 
 def process_messages():
     """ Process event messages """
-    # hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
-    # client = KafkaClient(hosts=hostname)
-    # topic = client.topics[str.encode(app_config['events']['topic'])]
 
-    # max_retries = app_config['events']['max_retries']
-    # retry_count = 0
-    logger = logging.getLogger('basicLogger')
-
-    # while retry_count < max_retries:
-    #     try:
-    #         # hostname = "%s:%d" % (
-    #         #     app_config['events']['hostname'], app_config['events']['port'])
-    #         # client = KafkaClient(hosts=hostname)
-    #         # topic = client.topics[str.encode(app_config['events']['topic'])]
-    consumer = topic.get_simple_consumer(consumer_group=b'event_group',
-                                            reset_offset_on_start=False,
-                                            auto_offset_reset=OffsetType.LATEST)
     for msg in consumer:
         msg_str = msg.value.decode('utf-8')
         msg = json.loads(msg_str)
+
         logger.info("Message: %s" % msg)
 
         write_to_database(msg)
 
         consumer.commit_offsets()
 
-        # except Exception as e:
-        #     logger.error(f"Failed to connect to Kafka: {str(e)}")
-        #     logger.info(
-        #         f"Retrying to connect to Kafka. Retry count: {retry_count}")
-        #     time.sleep(app_config['events']['retry_interval'])
-
-        #     retry_count += 1
-
-    # logger.error(
-    #     f"Failed to connect to Kafka after {max_retries} retries. Exiting now.")
-
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("delishery.yaml", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
-    configure_logging()
+    # configure_logging()
 
     t1 = Thread(target=process_messages)
     t1.setDaemon(True)

@@ -23,29 +23,24 @@ def configure_logging():
         log_config = yaml.safe_load(f.read())
         logging.config.dictConfig(log_config)
 
-# time.sleep(15)
+configure_logging()
 
-max_retries = app_config['events']['max_retries']
-retry_interval = app_config['events']['retry_interval']
-retry_count = 0
+logger = logging.getLogger('basicLogger')
 
-while retry_count < max_retries:
+time.sleep(10)
+
+connected_to_kafka = False
+
+while not connected_to_kafka:
     try:
         client = KafkaClient(
             hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
         topic = client.topics[str.encode(app_config['events']['topic'])]
-
-    except Exception as e:
-        logger = logging.getLogger('basicLogger')
-        logger.error(f"Failed to connect to Kafka: {str(e)}")
-        logger.info(
-            f"Retrying to connect to Kafka. Retry count: {retry_count}")
-        time.sleep(retry_interval)
-        retry_count += 1
-        continue
-    break
-
-producer = topic.get_sync_producer()
+        producer = topic.get_sync_producer()
+        connected_to_kafka = True
+    except:
+        logger.error("Failed to connect to Kafka, retrying in 5 seconds...")
+        time.sleep(app_config['events']['retry_interval'])
 
 def log_info(event, trace_id, status_code=None):
     logger = logging.getLogger('basicLogger')
@@ -56,36 +51,6 @@ def log_info(event, trace_id, status_code=None):
         logger.info(
             f"Received event {event} request with a trace of {trace_id}")
 
-
-# def create_kafka_producer():
-#     max_retries = app_config['events']['max_retries']
-#     retry_interval = app_config['events']['retry_interval']
-#     retry_count = 0
-    # logger = logging.getLogger('basicLogger')
-
-#     while retry_count < max_retries:
-#         try:
-#             client = KafkaClient(
-#                 hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
-#             topic = client.topics[str.encode(app_config['events']['topic'])]
-#             producer = topic.get_sync_producer()
-#             return producer
-
-#         except Exception as e:
-#             logger.error(f"Failed to connect to Kafka: {str(e)}")
-#             logger.info(
-#                 f"Retrying to connect to Kafka. Retry count: {retry_count}")
-#             time.sleep(retry_interval)
-#             retry_count += 1
-
-#     logger.error(
-#         f"Failed to connect to Kafka after {max_retries} retries. Exiting now.")
-#     return None
-
-
-# kafka_producer = create_kafka_producer()
-
-
 def invoke_kafka_producer(event_type, body):
     """Connects with Kafka and sends a message
 
@@ -94,18 +59,13 @@ def invoke_kafka_producer(event_type, body):
         body (object): Payload or request body of the event
     """
 
-    if producer:
-        msg = {
-            "type": event_type,
-            "datetime": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "payload": body
-        }
-        msg_str = json.dumps(msg)
-        producer.produce(msg_str.encode('utf-8'))
-    else:
-        logger = logging.getLogger('basicLogger')
-        logger.error("No producer found, exiting now.")
-
+    msg = {
+        "type": event_type,
+        "datetime": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "payload": body
+    }
+    msg_str = json.dumps(msg)
+    producer.produce(msg_str.encode('utf-8'))
 
 def add_delishery_delivery(body):
     """
