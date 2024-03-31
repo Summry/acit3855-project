@@ -1,7 +1,5 @@
 # ACIT 3855 Microservices Project
 
-
-
 ## Team Members
 
 - [x] 1. Nazira Fakhrurradi
