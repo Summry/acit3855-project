@@ -33,22 +33,6 @@ logger = logging.getLogger('basicLogger')
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
-def configure_app():
-    with open('app_conf.yml', 'r') as f:
-        app_config = yaml.safe_load(f.read())
-    return app_config
-
-app_config = configure_app()
-
-def configure_logging():
-    with open('log_conf.yml', 'r') as f:
-        log_config = yaml.safe_load(f.read())
-        logging.config.dictConfig(log_config)
-
-configure_logging()
-
-logger = logging.getLogger('basicLogger')
-
 time.sleep(10)
 
 connected_to_kafka = False
@@ -64,6 +48,7 @@ while not connected_to_kafka:
         logger.error("Failed to connect to Kafka, retrying in 5 seconds...")
         time.sleep(app_config['events']['retry_interval'])
 
+
 def log_info(event, trace_id, status_code=None):
     logger = logging.getLogger('basicLogger')
     if status_code:
@@ -72,6 +57,7 @@ def log_info(event, trace_id, status_code=None):
     else:
         logger.info(
             f"Received event {event} request with a trace of {trace_id}")
+
 
 def invoke_kafka_producer(event_type, body):
     """Connects with Kafka and sends a message
@@ -88,6 +74,7 @@ def invoke_kafka_producer(event_type, body):
     }
     msg_str = json.dumps(msg)
     producer.produce(msg_str.encode('utf-8'))
+
 
 def add_delishery_delivery(body):
     """
@@ -127,6 +114,5 @@ app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("delishery.yaml", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
-    configure_logging()
 
     app.run(port=app_config['app']['port'], host=app_config['app']['host'])

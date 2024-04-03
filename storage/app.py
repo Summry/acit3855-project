@@ -40,28 +40,6 @@ logger = logging.getLogger('basicLogger')
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
-def configure_app():
-    """Stores log events in the app.log file for every request
-
-    Returns:
-        Dictionary: app configuration details
-    """
-    with open('app_conf.yml', 'r') as f:
-        app_config = yaml.safe_load(f.read())
-    return app_config
-
-app_config = configure_app()
-
-def configure_logging():
-    """Logging configuration - creates app.log file
-    """
-    with open('log_conf.yml', 'r') as f:
-        log_config = yaml.safe_load(f.read())
-        logging.config.dictConfig(log_config)
-
-configure_logging()
-logger = logging.getLogger('basicLogger')
-
 # Database Credential Constants
 db_creds = app_config['datastore']
 DB_USER = db_creds['user']
@@ -252,7 +230,6 @@ app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("delishery.yaml", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
-    # configure_logging()
 
     t1 = Thread(target=process_messages)
     t1.setDaemon(True)

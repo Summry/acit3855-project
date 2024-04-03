@@ -38,30 +38,9 @@ logger = logging.getLogger('basicLogger')
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
-def configure_app():
-    """Stores log events in the app.log file for every request
-
-    Returns:
-        Dictionary: app configuration details
-    """
-    with open('app_conf.yml', 'r') as f:
-        app_config = yaml.safe_load(f.read())
-    return app_config
-
-
-app_config = configure_app()
-
 DB_ENGINE = create_engine("sqlite:///%s" % app_config["datastore"]["filename"])
 Base.metadata.bind = DB_ENGINE
 DB_SESSION = sessionmaker(bind=DB_ENGINE)
-
-
-def configure_logging():
-    """Logging configuration - creates app.log file
-    """
-    with open('log_conf.yml', 'r') as f:
-        log_config = yaml.safe_load(f.read())
-        logging.config.dictConfig(log_config)
 
 
 def log_get_info(event, event_list):
@@ -339,7 +318,6 @@ app.add_middleware(
 )
 
 if __name__ == "__main__":
-    configure_logging()
 
     if not check_db_exists():
         create_db()

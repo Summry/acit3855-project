@@ -32,25 +32,12 @@ logger = logging.getLogger('basicLogger')
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
 
-def configure_app():
-    with open('app_conf.yml', 'r') as f:
-        app_config = yaml.safe_load(f.read())
-    return app_config
-
-
-app_config = configure_app()
 
 time.sleep(15)
 hostname = "%s:%d" % (app_config['events']['hostname'],
                       app_config['events']['port'])
 client = KafkaClient(hosts=hostname)
 topic = client.topics[str.encode(app_config['events']['topic'])]
-
-
-def configure_logging():
-    with open('log_conf.yml', 'r') as f:
-        log_config = yaml.safe_load(f.read())
-        logging.config.dictConfig(log_config)
 
 
 def get_delivery_report(index):
@@ -138,6 +125,5 @@ app.add_middleware(
 )
 
 if __name__ == "__main__":
-    configure_logging()
 
     app.run(port=app_config['app']['port'], host='0.0.0.0')
