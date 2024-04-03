@@ -1,19 +1,20 @@
 import sqlite3
-# import os
+import os
 
-# import yaml
+import yaml
 
-# if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
-#     print("In Test Environment")
-#     app_conf_file = "/config/app_conf.yml"
-#     log_conf_file = "/config/log_conf.yml"
-# else:
-#     print("In Dev Environment")
-#     app_conf_file = "app_conf.yml"
-#     log_conf_file = "log_conf.yml"
+if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
+    print("In Test Environment")
+    app_conf_file = "/config/app_conf.yml"
+    log_conf_file = "/config/log_conf.yml"
+else:
+    print("In Dev Environment")
+    app_conf_file = "app_conf.yml"
+    log_conf_file = "log_conf.yml"
 
-# with open(app_conf_file, 'r') as f:
-#     app_config = yaml.safe_load(f.read())
+with open(app_conf_file, 'r') as f:
+    app_config = yaml.safe_load(f.read())
+    print("Successfully loaded app config")
 
 
 def create_db(filename):
@@ -21,7 +22,7 @@ def create_db(filename):
 
     c = conn.cursor()
     c.execute('''
-            CREATE TABLE delishery_stats
+            CREATE TABLE IF NOT EXISTS delishery_stats
             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
             num_of_deliveries INTEGER NOT NULL,
             num_of_schedules INTEGER NOT NULL,
@@ -35,4 +36,4 @@ def create_db(filename):
 
 
 if __name__ == "__main__":
-    create_db()
+    create_db(app_config['datastore']['filename'])
