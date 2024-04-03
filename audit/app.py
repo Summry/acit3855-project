@@ -46,12 +46,6 @@ def get_delivery_report(index):
     Args:
         index (string): Index of the message queue
     """
-
-    # hostname = "%s:%d" % (app_config['events']['hostname'],
-    #                       app_config['events']['port'])
-    # client = KafkaClient(hosts=hostname)
-    # topic = client.topics[str.encode(app_config['events']['topic'])]
-
     consumer = topic.get_simple_consumer(reset_offset_on_start=True,
                                          consumer_timeout_ms=1000)
 
@@ -84,12 +78,6 @@ def get_schedule_report(index):
     Returns:
         Event Object: Event object and the corresponding status code
     """
-
-    # hostname = "%s:%d" % (app_config['events']['hostname'],
-    #                       app_config['events']['port'])
-    # client = KafkaClient(hosts=hostname)
-    # topic = client.topics[str.encode(app_config['events']['topic'])]
-
     consumer = topic.get_simple_consumer(reset_offset_on_start=True,
                                          consumer_timeout_ms=1000)
 
@@ -126,4 +114,4 @@ app.add_middleware(
 
 if __name__ == "__main__":
 
-    app.run(port=app_config['app']['port'], host='0.0.0.0')
+    app.run(port=app_config['app']['port'], host=app_config['app']['host'])
