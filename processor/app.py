@@ -320,7 +320,7 @@ app.add_middleware(
 if __name__ == "__main__":
 
     if not check_db_exists():
-        create_db()
+        create_db(app_config['datastore']['filename'])
 
     init_scheduler()
 

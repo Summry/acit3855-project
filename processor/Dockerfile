@@ -10,6 +10,6 @@ RUN pip install -r requirements.txt
 
 COPY . /app/
 
-RUN python3 create_database.py
+# RUN python3 create_database.py
 
 CMD ["python3", "app.py"]
