@@ -42,6 +42,7 @@ DB_ENGINE = create_engine("sqlite:///%s" % app_config["datastore"]["filename"])
 Base.metadata.bind = DB_ENGINE
 DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
+create_db(app_config['datastore']['filename'])
 
 def log_get_info(event, event_list):
     """Logs GET requests for each event
