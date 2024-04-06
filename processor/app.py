@@ -308,15 +308,17 @@ def check_db_exists():
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
-app.add_api("delishery.yaml", strict_validation=True, validate_responses=True)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    position=MiddlewarePosition.BEFORE_EXCEPTION,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
+if "TARGET_ENV" not in os.environ or os.environ["TARGET_ENV"] != "test":
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        position=MiddlewarePosition.BEFORE_EXCEPTION,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"]
+    )
+    app.app.config['CORS_HEADERS'] = 'Content-Type'
+app.add_api("delishery.yaml", base_path="/processor", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
 

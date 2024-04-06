@@ -8,6 +8,8 @@ services:
     hostname: zookeeper
     volumes:
       - ${ZOOKEEPER_VOLUME}
+    networks:
+      - api.network
 
   kafka:
     image: wurstmeister/kafka
@@ -30,6 +32,8 @@ services:
       - ${KAFKA_VOLUME}
     depends_on:
       - "zookeeper"
+    networks:
+      - api.network
 
   db:
     image: mysql:5.7
@@ -45,53 +49,83 @@ services:
     expose:
       # Opens port 3306 on the container
       - "3306"
-
+    networks:
+      - api.network
     # Where our data will be persisted
     volumes:
       - my-db:/var/lib/mysql
+    
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - /home/azureuser/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - "receiver"
+      - "storage"
+      - "processor"
+      - "audit"
+      - "dashboard"
+    networks:
+      - api.network
 
   receiver:
-    image: nazzywazzy/receiver:receiverapp
+    # image: nazzywazzy/receiver:receiverapp
+    build:
+      context: ./receiver
+      dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
       - /home/azureuser/logs:/logs
       - /home/azureuser/config/receiver:/config
     ports:
-      - "8080:8080"
-    expose:
       - "8080"
+    networks:
+      - api.network
+    # expose:
+    #   - "8080"
     depends_on:
       - "kafka"
 
   storage:
-    image: nazzywazzy/storage:storageapp
+    # image: nazzywazzy/storage:storageapp
+    build:
+      context: ./storage
+      dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
       - /home/azureuser/logs:/logs
       - /home/azureuser/config/storage:/config
     ports:
-      - "8090:8090"
-    expose:
       - "8090"
+    networks:
+      - api.network
+    # expose:
+    #   - "8090"
     depends_on:
       - "db"
       - "kafka"
 
   processor:
-    image: nazzywazzy/processor:processorapp
+    # image: nazzywazzy/processor:processorapp
+    build:
+      context: ./processor
+      dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
       - processor-data:/data
       - /home/azureuser/logs:/logs
       - /home/azureuser/config/processor:/config
-    expose:
+    ports:
       - "8100"
+    networks:
+      - api.network
     depends_on:
       - "storage"
-    network_mode: "host"
 
   audit:
     build:
@@ -103,9 +137,11 @@ services:
       - /home/azureuser/logs:/logs
       - /home/azureuser/config/audit_log:/config
     ports:
-      - "8110:8110"
-    expose:
       - "8110"
+    networks:
+      - api.network
+    # expose:
+    #   - "8110"
     depends_on:
       - "kafka"
 
@@ -114,12 +150,17 @@ services:
       context: ./dashboard
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
-    expose:
       - "3000"
+    networks:
+      - api.network
+    # expose:
+    #   - "3000"
     depends_on:
       - "processor"
       - "audit"
+
+networks:
+  api.network:
 
 # Names our volume
 volumes:
