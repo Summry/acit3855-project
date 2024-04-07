@@ -34,10 +34,22 @@ logger.info("Log Conf File: %s" % log_conf_file)
 
 
 time.sleep(15)
-hostname = "%s:%d" % (app_config['events']['hostname'],
+
+connected_to_kafka = False
+
+while not connected_to_kafka:
+    try:
+        hostname = "%s:%d" % (app_config['events']['hostname'],
                       app_config['events']['port'])
-client = KafkaClient(hosts=hostname)
-topic = client.topics[str.encode(app_config['events']['topic'])]
+        client = KafkaClient(hosts=hostname)
+        topic = client.topics[str.encode(app_config['events']['topic'])]
+        connected_to_kafka = True
+    except:
+        logger.error("Failed to connect to Kafka, retrying in 5 seconds...")
+        time.sleep(app_config['events']['retry_interval'])
+
+
+logger.info("Connected to Kafka!")
 
 
 def get_delivery_report(index):

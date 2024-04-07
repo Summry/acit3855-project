@@ -49,6 +49,9 @@ while not connected_to_kafka:
         time.sleep(app_config['events']['retry_interval'])
 
 
+logger.info("Connected to Kafka!")
+
+
 def log_info(event, trace_id, status_code=None):
     logger = logging.getLogger('basicLogger')
     if status_code:
