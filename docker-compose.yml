@@ -71,10 +71,10 @@ services:
       - api.network
 
   receiver:
-    # image: nazzywazzy/receiver:receiverapp
-    build:
-      context: ./receiver
-      dockerfile: Dockerfile
+    image: nazzywazzy/receiver:receiverapp
+    # build:
+    #   context: ./receiver
+    #   dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
@@ -90,10 +90,10 @@ services:
       - "kafka"
 
   storage:
-    # image: nazzywazzy/storage:storageapp
-    build:
-      context: ./storage
-      dockerfile: Dockerfile
+    image: nazzywazzy/storage:storageapp
+    # build:
+    #   context: ./storage
+    #   dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
@@ -110,10 +110,10 @@ services:
       - "kafka"
 
   processor:
-    # image: nazzywazzy/processor:processorapp
-    build:
-      context: ./processor
-      dockerfile: Dockerfile
+    image: nazzywazzy/processor:processorapp
+    # build:
+    #   context: ./processor
+    #   dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
@@ -128,9 +128,10 @@ services:
       - "storage"
 
   audit:
-    build:
-      context: ./audit
-      dockerfile: Dockerfile
+    image: nazzywazzy/audit:auditapp
+    # build:
+    #   context: ./audit
+    #   dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
@@ -146,9 +147,10 @@ services:
       - "kafka"
 
   dashboard:
-    build:
-      context: ./dashboard
-      dockerfile: Dockerfile
+    image: nazzywazzy/dashboard:dashboardapp
+    # build:
+    #   context: ./dashboard
+    #   dockerfile: Dockerfile
     ports:
       - "3000"
     networks:
