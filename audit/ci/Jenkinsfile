@@ -1,2 +1,2 @@
-@Library('ci_functions@mail') _
-python_build(audit, auditapp)
+@Library('ci_functions@main') _
+python_build('audit', 'auditapp')
