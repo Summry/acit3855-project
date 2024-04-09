@@ -147,10 +147,9 @@ services:
       - "kafka"
 
   dashboard:
-    image: nazzywazzy/dashboard:dashboardapp
-    # build:
-    #   context: ./dashboard
-    #   dockerfile: Dockerfile
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
     ports:
       - "3000"
     networks:
