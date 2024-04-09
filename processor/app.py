@@ -269,6 +269,7 @@ def populate_stats():
     """Periodically processes the statistical numeric data
     """
     logger = logging.getLogger('basicLogger')
+    logger.info("Demoing assignment 3 - ACIT 4850 ---------------------------------------")
     logger.info(
         "AYE BROOO - PERIODIC PROCESSING HAS STARTED............................................................")
 
