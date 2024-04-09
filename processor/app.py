@@ -1,6 +1,8 @@
+import json
 import logging
 import logging.config
 import os
+import time
 from datetime import datetime
 
 import connexion
@@ -14,6 +16,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from starlette.middleware.cors import CORSMiddleware
 from stats import Stats
+from pykafka import KafkaClient
 
 
 if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
@@ -37,6 +40,43 @@ logger = logging.getLogger('basicLogger')
 
 logger.info("App Conf File: %s" % app_conf_file)
 logger.info("Log Conf File: %s" % log_conf_file)
+
+time.sleep(10)
+
+connected_to_kafka = False
+
+while not connected_to_kafka:
+    try:
+        client = KafkaClient(
+            hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}"
+        )
+
+        event_log_topic = client.topics[str.encode(app_config['events']['log_topic'])]
+        event_log_producer = event_log_topic.get_sync_producer()
+
+        connected_to_kafka = True
+        logger.info("Successfully connected to Kafka. Hostname: %s, Port: %d" % (app_config['events']['hostname'], app_config['events']['port']))
+    except:
+        logger.error("Failed to connect to Kafka, retrying in 5 seconds...")
+        time.sleep(app_config['events']['retry_interval'])
+
+
+def produce_service_event_log():
+    """
+    This function produces a log message to the event log topic.
+    """
+
+    ready_message = {
+        "datetime": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "payload": {
+            "code": "0003",
+            "message": "Processor Service is running!"
+        }
+    }
+
+    ready_message_str = json.dumps(ready_message)
+    event_log_producer.produce(ready_message_str.encode('utf-8'))
+
 
 DB_ENGINE = create_engine("sqlite:///%s" % app_config["datastore"]["filename"])
 Base.metadata.bind = DB_ENGINE
@@ -165,12 +205,12 @@ def process_data(current_stats, deliveries, schedules, curr_date):
     num_of_schedules = current_stats['num_of_schedules'] + len(schedules)
 
     for delivery in deliveries:
-        # print(delivery)
+
         log_get_debug("DELIVERIES", trace_id=delivery['trace_id'])
         total_delivery_items += delivery['item_quantity']
 
     for schedule in schedules:
-        # print(schedule)
+
         log_get_debug("SCHEDULES", trace_id=schedule['trace_id'])
         total_scheduled_deliveries += schedule['number_of_deliveries']
 
@@ -213,6 +253,18 @@ def get_new_data(event, last_updated, curr_date):
     }, timeout=10)
 
 
+def produce_event_log(message):
+    msg = {
+        "datetime": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "payload": {
+            "code": "0004",
+            "message": message
+        }
+    }
+    msg_str = json.dumps(msg)
+    event_log_producer.produce(msg_str.encode('utf-8'))
+
+
 def populate_stats():
     """Periodically processes the statistical numeric data
     """
@@ -237,6 +289,11 @@ def populate_stats():
     log_get_info("SCHEDULES", schedules.json())
     if schedules.status_code != 200:
         log_get_error("SCHEDULES")
+
+    num_configurable_messages = len(deliveries.json()) + len(schedules.json())
+    if num_configurable_messages > app_config['events']['threshold']:
+        produce_event_log(f"Received more than {app_config['events']['threshold']} configurable events/messages ({num_configurable_messages} messages received).")
+        logger.info("Logging [0004]... Received more than 25 configurable events/messages successfully!")
 
     new_stats = process_data(
         current_stats, deliveries.json(), schedules.json(), curr_date_datetime)
@@ -321,6 +378,7 @@ if "TARGET_ENV" not in os.environ or os.environ["TARGET_ENV"] != "test":
 app.add_api("delishery.yaml", base_path="/processor", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
+    produce_service_event_log()
 
     if not check_db_exists():
         create_db(app_config['datastore']['filename'])

@@ -3,15 +3,11 @@ datastore:
   filename: stats.sqlite
 scheduler:
   period_sec: 5
-deliverystore:
-  url: http://localhost:8090/deliveries
-schedulestore:
-  url: http://localhost:8090/schedules
 events:
   hostname: acit3855lab6a.westus.cloudapp.azure.com
   port: 9092
   log_topic: event_log
   threshold: 25
 app:
-  port: 8100
+  port: 8120
   host: '0.0.0.0'

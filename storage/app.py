@@ -65,6 +65,7 @@ while not connected_to_db:
         logger.error("Failed to connect to DB. Retrying in 5 seconds...")
         time.sleep(app_config['datastore']['retry_interval'])
 
+
 def log_post_info(event, trace_id):
     """Logs requests
 
@@ -88,25 +89,47 @@ def log_get_info(event, start_timestamp, len_of_results):
     logger.info(
         f"Query for {event} after {start_timestamp} returns {len_of_results} results")
 
+
 connected_to_kafka = False
 
 while not connected_to_kafka:
     try:
         hostname = "%s:%d" % (app_config['events']['hostname'], app_config['events']['port'])
         client = KafkaClient(hosts=hostname)
-        topic = client.topics[str.encode(app_config['events']['topic'])]
+        events_topic = client.topics[str.encode(app_config['events']['topic'])]
 
-        consumer = topic.get_simple_consumer(
+        consumer = events_topic.get_simple_consumer(
             consumer_group=b'event_group',
             reset_offset_on_start=False,
             auto_offset_reset=OffsetType.LATEST
         )
+
+        event_log_topic = client.topics[str.encode(app_config['events']['log_topic'])]
+        event_log_producer = event_log_topic.get_sync_producer()
 
         connected_to_kafka = True
         logger.info("Successfully connected to Kafka. Hostname: %s, Port: %d" % (app_config['events']['hostname'], app_config['events']['port']))
     except:
         logger.error("Failed to connect to Kafka. Retrying in 5 seconds...")
         time.sleep(app_config['events']['retry_interval'])
+
+
+def produce_event_log():
+    """
+    This function will produce a message to the event log topic.
+    """
+    
+    ready_message = {
+        "datetime": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "payload": {
+            "code": "0002",
+            "message": "Storage Service is ready to consume messages from the events topic on Kafka."
+        }
+    }
+
+    ready_message_str = json.dumps(ready_message)
+    event_log_producer.produce(ready_message_str.encode('utf-8'))
+
 
 def write_to_database(message):
     """This function will write the body/data/payload to the database
@@ -230,6 +253,7 @@ app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("delishery.yaml", base_path="/storage", strict_validation=True, validate_responses=True)
 
 if __name__ == "__main__":
+    produce_event_log()
 
     t1 = Thread(target=process_messages)
     t1.setDaemon(True)

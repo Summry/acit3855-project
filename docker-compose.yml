@@ -71,10 +71,10 @@ services:
       - api.network
 
   receiver:
-    image: nazzywazzy/receiver:receiverapp
-    # build:
-    #   context: ./receiver
-    #   dockerfile: Dockerfile
+    # image: nazzywazzy/receiver:receiverapp
+    build:
+      context: ./receiver
+      dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
@@ -84,16 +84,14 @@ services:
       - "8080"
     networks:
       - api.network
-    # expose:
-    #   - "8080"
     depends_on:
       - "kafka"
 
   storage:
-    image: nazzywazzy/storage:storageapp
-    # build:
-    #   context: ./storage
-    #   dockerfile: Dockerfile
+    # image: nazzywazzy/storage:storageapp
+    build:
+      context: ./storage
+      dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
@@ -103,17 +101,15 @@ services:
       - "8090"
     networks:
       - api.network
-    # expose:
-    #   - "8090"
     depends_on:
       - "db"
       - "kafka"
 
   processor:
-    image: nazzywazzy/processor:processorapp
-    # build:
-    #   context: ./processor
-    #   dockerfile: Dockerfile
+    # image: nazzywazzy/processor:processorapp
+    build:
+      context: ./processor
+      dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
@@ -126,12 +122,13 @@ services:
       - api.network
     depends_on:
       - "storage"
+      - "kafka"
 
   audit:
-    image: nazzywazzy/audit:auditapp
-    # build:
-    #   context: ./audit
-    #   dockerfile: Dockerfile
+    # image: nazzywazzy/audit:auditapp
+    build:
+      context: ./audit
+      dockerfile: Dockerfile
     environment:
       - TARGET_ENV=test
     volumes:
@@ -141,8 +138,6 @@ services:
       - "8110"
     networks:
       - api.network
-    # expose:
-    #   - "8110"
     depends_on:
       - "kafka"
 
@@ -154,11 +149,26 @@ services:
       - "3000"
     networks:
       - api.network
-    # expose:
-    #   - "3000"
     depends_on:
       - "processor"
       - "audit"
+
+  event_logger:
+    build:
+      context: ./event_logger
+      dockerfile: Dockerfile
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - event_logger-data:/data
+      - /home/azureuser/logs:/logs
+      - /home/azureuser/config/event_logger:/config
+    ports:
+      - "8120"
+    networks:
+      - api.network
+    depends_on:
+      - "kafka"
 
 networks:
   api.network:
@@ -169,3 +179,4 @@ volumes:
   processor-data:
   kafka-data:
   zookeeper-data:
+  event_logger-data:

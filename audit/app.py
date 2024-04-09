@@ -71,14 +71,15 @@ def get_delivery_report(index):
 
             if msg['type'] == 'delivery':
                 if count == index:
+                    logger.info("Found DELIVERY at index %d" % index)
                     return msg['payload'], 200
                 count += 1
 
     except:
         logger.error("No more messages found.")
 
-    logger.error("Could not find DELIVERY at index %d" % index)
-    return {'message': "NOT FOUND"}, 404
+    logger.error("404 - Could not find DELIVERY at index %d" % index)
+    return {'message': "404 NOT FOUND - Could not find DELIVERY"}, 404
 
 
 def get_schedule_report(index):
@@ -103,6 +104,7 @@ def get_schedule_report(index):
 
             if msg['type'] == 'schedule':
                 if count == index:
+                    logger.info("Found SCHEDULE at index %d" % index)
                     return msg['payload'], 200
                 count += 1
 
@@ -110,7 +112,7 @@ def get_schedule_report(index):
         logger.error("No more messages found.")
 
     logger.error("Could not find SCHEDULE at index %d" % index)
-    return {'message': "NOT FOUND"}, 404
+    return {'message': "404 NOT FOUND - Could not find SCHEDULE"}, 404
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
