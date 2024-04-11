@@ -45,7 +45,7 @@ export default function AuditCard() {
           {scheduleContent}
         </div>
       ) : (
-        <div className="space-y-2 pt-2">
+        <div className="space-y-2 pt-2 pb-2">
           <Skeleton className="h-4 w-[350px]" />
           <Skeleton className="h-4 w-[350px] delay-150" />
           <Skeleton className="h-4 w-[275px] delay-300" />
