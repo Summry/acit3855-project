@@ -40,7 +40,6 @@ export default function EventLoggerCard() {
       <div className="flex flex-col justify-center items-center">
         <div className="flex justify-center w-[500px]">
           <div className="flex flex-col p-4">
-            <h3>Event Logger</h3>
             {eventLoggerContent}
           </div>
         </div>
