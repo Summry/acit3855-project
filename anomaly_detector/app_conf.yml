@@ -1,0 +1,14 @@
+version: 1
+datastore:
+  filename: anomaly.sqlite
+scheduler:
+  period_sec: 5
+events:
+  hostname: acit3855lab6a.westus.cloudapp.azure.com
+  port: 9092
+  topic: events
+  delivery_anomaly: 7
+  schedule_anomaly: 3
+app:
+  port: 8130
+  host: '0.0.0.0'

@@ -170,6 +170,23 @@ services:
     depends_on:
       - "kafka"
 
+  anomaly_detector:
+    build:
+      context: ./anomaly_detector
+      dockerfile: Dockerfile
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - anomaly_detector-data:/data
+      - /home/azureuser/logs:/logs
+      - /home/azureuser/config/anomaly_detector:/config
+    ports:
+      - "8130"
+    networks:
+      - api.network
+    depends_on:
+      - "kafka"
+
 networks:
   api.network:
 
@@ -180,3 +197,4 @@ volumes:
   kafka-data:
   zookeeper-data:
   event_logger-data:
+  anomaly_detector-data:
